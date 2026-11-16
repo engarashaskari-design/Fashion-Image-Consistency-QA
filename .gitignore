@@ -8,3 +8,15 @@ outputs/
 examples/
 *_backup.py
 requirements-lock-backup.txt
+
+# Local credentials, editor backups, and generated artifacts
+.env.*
+*.pem
+*.key
+*.bak
+*.orig
+*.swp
+*~
+*-backup.*
+*_backup.*
+.pytest_cache/

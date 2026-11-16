@@ -32,7 +32,7 @@ The application performs local image analysis and does not generate fashion imag
 
 ## Project Structure
 
-    Fashion_Identity_QA/
+    Fashion-Image-Consistency-QA/
     |-- app.py
     |-- face_analysis.py
     |-- face_comparison.py
@@ -49,7 +49,7 @@ The application was tested using an original person image and a styled image gen
 |---|---|
 | Facial geometry distance | 0.0158 |
 | Mean joint-angle difference | 1.32 degrees |
-| Valid joint angles | 8 |
+| Evaluated joint angles | 8 |
 
 These results represent one exploratory test case.
 
@@ -59,7 +59,10 @@ Lower geometric differences may indicate greater similarity in the measured feat
 
 Python 3.11 is recommended.
 
-Clone the repository and open the project directory.
+Clone the repository and open the project directory:
+
+    git clone https://github.com/engarashaskari-design/Fashion-Image-Consistency-QA.git
+    cd Fashion-Image-Consistency-QA
 
 Create a virtual environment:
 
@@ -69,13 +72,13 @@ Activate the environment on macOS or Linux:
 
     source .venv/bin/activate
 
-Install the recorded dependencies:
+Attempt installation of the recorded dependency versions (see the known compatibility issue below):
 
     python -m pip install -r requirements-lock.txt
 
-Important: The existing macOS Apple Silicon environment reports a MediaPipe 0.10.21 wheel compatibility warning.
+Known compatibility issue: in the existing Python 3.11.0 macOS Apple Silicon environment, `python -m pip check` reports `mediapipe 0.10.21 is not supported on this platform`. The installed wheel metadata declares `cp311-cp311-macosx_14_0_x86_64`, which does not match the arm64 runtime, despite the originally installed wheel having a `macosx_11_0_universal2` filename.
 
-Clean-environment installation and cross-platform reproducibility have not yet been validated.
+`requirements-lock.txt` records pinned environment versions, not a verified portable installation. Its former temporary local wheel reference has been replaced with `mediapipe==0.10.21`; this does not fix the upstream wheel metadata. Clean-environment installation and cross-platform reproducibility have not been validated. No dependency upgrades or metadata workarounds are included.
 
 ## Running the Application
 
@@ -104,7 +107,7 @@ The application normally uses:
 
 Facial landmarks are extracted and compared using normalized geometric coordinates.
 
-The reported distance provides an exploratory measure of facial landmark similarity.
+The distance is the mean Euclidean distance between corresponding 2D landmarks after centering and normalization by root-mean-square face radius. It is dimensionless; rotation and perspective are not aligned.
 
 It does not establish or verify personal identity.
 
@@ -125,7 +128,7 @@ The application calculates angular differences for up to eight joints:
 
 Only sufficiently visible joints are included in the reported comparison.
 
-The mean joint-angle difference is expressed in degrees.
+Angles are computed in 2D pixel coordinates with image aspect ratio accounted for. All three landmarks in each joint must have visibility of at least 0.6 in both images; fewer than three usable angles returns `Not assessable`. The mean joint-angle difference is expressed in degrees.
 
 ## Image Generation Attribution
 
@@ -142,12 +145,17 @@ This repository implements the image analysis, comparison logic, and Gradio inte
 
 It does not implement, train, or claim ownership of the FASHN image generation model.
 
+Private source and generated example images are intentionally excluded from this repository. The recorded example results are retained from the original exploratory test and cannot be independently reproduced from the published files alone.
+
+Third-party analysis and UI dependencies include [MediaPipe](https://github.com/google-ai-edge/mediapipe), [OpenCV](https://github.com/opencv/opencv), [NumPy](https://numpy.org/), [Pillow](https://python-pillow.github.io/), and [Gradio](https://github.com/gradio-app/gradio). Their respective licenses apply to those components.
+
 ## Limitations
 
 - Facial geometry measurements do not verify identity preservation.
 - Joint-angle similarity does not guarantee anatomical correctness.
 - Body proportions are not independently validated.
 - Results can be affected by image framing, occlusion, camera angle, clothing, and detection errors.
+- Single-person images are expected; multi-person matching is not supported.
 - No validated acceptance thresholds are provided.
 - Further testing is required before production deployment.
 

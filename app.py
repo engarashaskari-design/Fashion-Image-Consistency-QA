@@ -27,9 +27,9 @@ def evaluate(before, after):
     return before, after, report
 
 
-with gr.Blocks(title="Fashion Identity QA") as demo:
+with gr.Blocks(title="Fashion Image Consistency QA") as demo:
     gr.Markdown(
-        "# Fashion Identity QA\n"
+        "# Fashion Image Consistency QA\n"
         "Facial Geometry & Body Pose Comparison"
     )
 
